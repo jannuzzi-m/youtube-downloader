@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World!</title>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline';"
+    />
+    <link href="./style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="content">
+      <div id="list" class="container">
+        <div class="row justify-content-center input-group mt-2 mb-2">
+          <div class="col-sm-8">
+            <input
+              id="searchInput"
+              class="form-control"
+              type="text"
+              placeholder="Pesquisa"
+              aria-label="Disabled input example"
+            />
+          </div>
+          <div class="col-sm-2">
+            <button id="searchBtn" class="btn btn-primary">Pesquisar</button>
+          </div>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Imagem</th>
+              <th scope="col">Titulo</th>
+              <th scope="col">Canal</th>
+              <th scope="col">Detalhes</th>
+            </tr>
+          </thead>
+          <tbody id="tc"></tbody>
+        </table>
+      </div>
+
+      <div id="details" class="container mt-4">
+        <div class="col-md-12">
+          <div class="row justify-content-md-center">
+            <iframe
+              class="row"
+              id="vp"
+              width="640"
+              height="360"
+              src=""
+              frameborder="0"
+            ></iframe>
+          </div>
+          <div class="row justify-content-md-center mt-4">
+            <button id="btnVoltar" class="btn btn-success col-md-3 mr-4">Voltar</button>
+            <button id="btnDownload" class="btn btn-success col-md-3 ml-4">Download</button>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+    <script src="./index.js"></script>
+  </body>
+</html>
+
+<!-- 
+<iframe
+            class="col-sm-8 justify-content-center"
+            id="vp"
+            width="640"
+            height="360"
+            src=""
+            frameborder="0"
+          ></iframe>
+
+          <div class="col-sm-6">
+            <button id="btnVoltar" class="btn btn-success ">Voltar</button>
+          </div>
+          <div class="col-sm-6">
+            <button id="btnDownload" class="btn btn-success ">Download</button>
+          </div> -->
