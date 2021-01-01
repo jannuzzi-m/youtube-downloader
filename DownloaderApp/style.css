@@ -10,7 +10,7 @@
     display: none;
 }
 
-#download-modal{
+#download-modal, #loading-modal{
     
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -32,13 +32,23 @@
     display: flex; /* Hidden by default */
     align-items: center;
     justify-content: center;
-    flex-direction: row;
+    flex-direction: column;
     height: 30vh;
+    width: 60vh;
+    background-color: rgba(255, 255, 255, .9);
+}
+#loading-content{
+    border-radius: 20px;
+    display: flex; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 60vh;
     width: 60vh;
     background-color: rgba(255, 255, 255, .9);
 }
 
 .btn-download{
+    margin: 10px;
     width: 50vh;
-    height: 10vh;
 }

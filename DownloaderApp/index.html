@@ -10,27 +10,32 @@
     <link href="./style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="#">YoutubeDownloader</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li id="search-tab" class="nav-item active">
-            <a  class="nav-link" href="#">Search <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="#"
+              >Search <span class="sr-only">(current)</span></a
+            >
           </li>
           <li id="DownloadTabBtn" class="nav-item">
-            <a  class="nav-link" href="#">Download</a>
+            <a class="nav-link" href="#">Download</a>
           </li>
-          
         </ul>
       </div>
     </nav>
-
-
-
 
     <div id="content">
       <div id="list" class="container">
@@ -76,10 +81,45 @@
             ></iframe>
           </div>
           <div class="row justify-content-md-center mt-4">
-            <button id="btnVoltar" class="btn btn-success col-md-3 mr-4">Voltar</button>
-            <button id="btnDownload" class="btn btn-success col-md-3 ml-4">Download</button>
+            <button id="btnVoltar" class="btn btn-success col-md-3 mr-4">
+              Voltar
+            </button>
+            <button id="btnDownload" class="btn btn-success col-md-3 ml-4">
+              Download
+            </button>
           </div>
-          
+        </div>
+      </div>
+    </div>
+
+    <div id="download-modal">
+      <div id="download-content">
+        <div class="row">
+          <button class="btn btn-success btn-download">Audio</button>
+        </div>
+        <div class="row">
+          <button id="downloadTabBtn" class="btn btn-success btn-download">Video</button>
+        </div>
+        <div class="row">
+          <button id="cancelDownloadVideoBtn" class="btn btn-warning btn-download">Cancelar</button>
+        </div>
+      </div>
+
+
+
+
+      
+    </div>
+    
+    
+    
+    <div id="loading-modal">
+      <div id="loading-content">
+        <div class="row">
+          <h1 id="downloading-line">Downloading</h1>
+        </div>
+        <div class="row">
+          <img id="gif" src="https://media.giphy.com/media/LHZyixOnHwDDy/giphy.gif" width="250px" height="250px" alt="">
         </div>
       </div>
     </div>
@@ -87,20 +127,3 @@
     <script src="./index.js"></script>
   </body>
 </html>
-
-<!-- 
-<iframe
-            class="col-sm-8 justify-content-center"
-            id="vp"
-            width="640"
-            height="360"
-            src=""
-            frameborder="0"
-          ></iframe>
-
-          <div class="col-sm-6">
-            <button id="btnVoltar" class="btn btn-success ">Voltar</button>
-          </div>
-          <div class="col-sm-6">
-            <button id="btnDownload" class="btn btn-success ">Download</button>
-          </div> -->
