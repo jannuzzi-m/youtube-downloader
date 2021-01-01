@@ -1,32 +1,52 @@
+const { API_KEY } = require("./api");
 
-const URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&key=${API_KEY}&type=video&q=minecraft`;
-
-const searchhUrl = 'https://www.youtube.com/embed/tgbNymZ7vqY?autoplay=1';
-
-const listPage = document.getElementById('list');
-const detailsPage = document.getElementById('details');
-const video = document.getElementById('vp');
+const { json } = require("./fakeData");
 
 
+const listPage = document.getElementById("list");
+const detailsPage = document.getElementById("details");
+// const video = document.getElementById("vp");
 
-
-const table = document.getElementById("tc");
+const btnDownload = document.getElementById("btnDownload");
+const tbody = document.getElementById("tc");
 const inputField = document.getElementById("searchInput");
 const inputBtn = document.getElementById("searchBtn");
 const backBtn = document.getElementById("btnVoltar");
 
+const downloadModal = document.getElementById("download-modal");
 
-const get = () => {
-  // fetch(URL)
-  //     .then(response => response.json())
-  //     .then(json =>  showInfo(json))
-  showInfo(json);
+const downloadVideoBtn = document.getElementById("DownloadTabBtn");
+
+
+
+
+
+const get = (keyword) => {
+  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&key=${API_KEY}&type=video&q=${keyword}`;
+  tbody.innerHTML = '';
+  fetch(url)
+      .then(response => response.json())
+      .then(json =>  showInfo(json))
+
+};
+
+let showDetails = (info) => {
+  // video.src = setUrl(info.id.videoId);
+  listPage.style.display = "none";
+  detailsPage.style.display = "block";
+  btnDownload.addEventListener("click", () => download(info));
+};
+
+let backToList = () => {
+  detailsPage.style.display = "none";
+  listPage.style.display = "block";
+  // video.src = "";
 };
 
 let showInfo = (json) => {
   let items = json.items;
   items.map((item, index) => {
-    let tbody = document.getElementById("tc");
+    
 
     let th = document.createElement("tr");
 
@@ -40,7 +60,7 @@ let showInfo = (json) => {
     btn.classList.add("btn");
     btn.classList.add("btn-success");
 
-    btn.addEventListener('click',() => showDetails(item))
+    btn.addEventListener("click", () => showDetails(item));
 
     let btnDownload = document.createTextNode("Detalhes");
     btn.appendChild(btnDownload);
@@ -71,110 +91,39 @@ let showInfo = (json) => {
   });
 };
 
-let json = {
-  items: [
-    {
-      id: {
-        videoId: "IpfE8B9H9cI",
-      },
-      snippet: {
-        thumbnails: {
-          default: {
-            url:
-              "https://i.ytimg.com/an_webp/IpfE8B9H9cI/mqdefault_6s.webp?du=3000&sqp=CKCos_8F&rs=AOn4CLCfttf76i_ixc1TOjDuWisYgtRYnA",
-          },
-        },
-        title: "Big Data // Dicionário do Programador",
-        channelTitle: "Código Fonte TV",
-      },
-    },
-    {
-      id: {
-        videoId: 't4lrpXiN41I',
-      },
-      snippet: {
-        thumbnails: {
-          default: {
-            url:
-              "https://i.ytimg.com/an_webp/t4lrpXiN41I/mqdefault_6s.webp?du=3000&sqp=CKzosv8F&rs=AOn4CLCP3nD7U0T9yNLgbvND6JIfGZAoMQ",
-          },
-        },
-        title: "Noriega, o presidente traficante",
-        channelTitle: "Nerdologia",
-      },
-    },
-    {
-      id: {
-        videoId: 'lOVeFSwPagY',
-      },
-      snippet: {
-        thumbnails: {
-          default: {
-            url:
-              "https://i.ytimg.com/an_webp/lOVeFSwPagY/mqdefault_6s.webp?du=3000&sqp=CJqJs_8F&rs=AOn4CLD2Ib4Qep4184BeWOnhKrpbn8JiLg",
-          },
-        },
-        title: "O que aconteceria se você tocasse em uranio?",
-        channelTitle: "Ciência todo dia",
-      },
-    },
-    {
-      id: {
-        videoId: 'jIcFFPOzCuw',
-      },
-      snippet: {
-        thumbnails: {
-          default: {
-            url:
-              "https://i.ytimg.com/an_webp/jIcFFPOzCuw/mqdefault_6s.webp?du=3000&sqp=CIyvs_8F&rs=AOn4CLAy_9D_csm8kFtVExhEFu7xq1MVmw",
-          },
-        },
-        title: 'QUANTO você PAGA de ENERGIA na carga do CELULAR? Nós testamos!',
-        channelTitle: "Manual do Mundo",
-      },
-    },
-    {
-      id: {
-        videoId: 'aIvljqOaQJ0',
-      },
-      snippet: {
-        thumbnails: {
-          default: {
-            url:
-              "https://i.ytimg.com/an_webp/aIvljqOaQJ0/mqdefault_6s_480x270.webp?du=3000&sqp=CKids_8F&rs=AOn4CLAw9w18cKRkzsNi8TJyiLYvvhrGFw",
-          },
-        },
-        title: "Beta vs Luck - BattleBots",
-        channelTitle: "ABC",
-      },
-    },
-  ],
+let setUrl = (id) => {
+  let searchhUrl = `https://www.youtube.com/embed/${id}?autoplay=0`;
+  return searchhUrl;
+};
+backBtn.addEventListener("click", backToList);
+
+let download = (info) => {
+  downloadModal.style.display = "flex";
+  downloadVideoBtn.addEventListener("click", () => downloadVideo(info));
 };
 
-
-let showDetails = (info) => {
-
-    video.src = setUrl(info.id.videoId);
-
-    listPage.style.display = 'none';
-    detailsPage.style.display = 'block';
+let downloadVideo = (info) => {
+  downloadModal.style.display = "none";
+  let data = {
+    VideoId: info.id.videoId,
+    Title: info.snippet.title
+  }
+  
+  fetch('https://localhost:5001/api/Videos', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  }).then(response => response.json())
+    .then(json => console.log(json))
     
-
-
 }
 
-let backToList = () =>{
-  detailsPage.style.display = 'none';
-  listPage.style.display = 'block';
-  video.src = '';
-}
+let downloadAudio = () => {
+  return null;
+};
 
-backBtn.addEventListener('click', backToList)
+inputBtn.addEventListener("click", () => get(inputField.value));
 
-let setUrl = (id) =>{
-    let searchhUrl = `https://www.youtube.com/embed/${id}?autoplay=1`;
-    return searchhUrl;
-}
-
-
-get();

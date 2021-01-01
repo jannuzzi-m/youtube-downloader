@@ -3,3 +3,4 @@ node_modules
 bin
 api.js
 *.mp4
+fakeData.js

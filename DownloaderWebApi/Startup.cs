@@ -46,7 +46,7 @@ namespace DownloaderWebApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DownloaderWebApi v1"));
             }
-
+            app.UseCors();
             app.UseHttpsRedirection();
 
             app.UseRouting();
