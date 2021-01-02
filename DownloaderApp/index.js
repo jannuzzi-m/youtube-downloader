@@ -1,32 +1,44 @@
 const { API_KEY } = require("./api");
-
 const { json } = require("./fakeData");
 
-const listPage = document.getElementById("list");
-const detailsPage = document.getElementById("details");
-const video = document.getElementById("vp");
-
-const btnDownload = document.getElementById("btnDownload");
-const tbody = document.getElementById("tc");
-const inputField = document.getElementById("searchInput");
-const inputBtn = document.getElementById("searchBtn");
-const backBtn = document.getElementById("btnVoltar");
-
-const downloadModal = document.getElementById("download-modal");
-const loadingModal = document.getElementById("loading-modal")
-
-const downloadVideoBtn = document.getElementById("downloadTabBtn");
-const cancelDownloadVideoBtn = document.getElementById("cancelDownloadVideoBtn");
-
-const gifCatDownloading = "https://media.giphy.com/media/LHZyixOnHwDDy/giphy.gif"
-const gifCatDownloadDone = "https://media.giphy.com/media/jQWUkD7a4AWfkraBJa/giphy.gif"
-
-const gif = document.getElementById('gif')
-const downloadLine = document.getElementById('downloading-line');
+const DOM = {
+  gifs: {
+    gifElement: document.getElementById('gif'),
+    gifDownloading: "https://media.giphy.com/media/LHZyixOnHwDDy/giphy.gif",
+    gifDownloadDone: gifCatDownloadDone = "https://media.giphy.com/media/jQWUkD7a4AWfkraBJa/giphy.gif"
+  },
+  modals: {
+    downloadOptionsModal: document.getElementById("download-modal"),
+    downloadingModal: document.getElementById("loading-modal")
+  },
+  buttons:{
+    downloadOptions: document.getElementById("btnDownloadOptions"),
+    backFromDetails: document.getElementById("btnVoltar"),
+    search: document.getElementById("searchBtn"),
+    backFromDownloadOptions: document.getElementById("cancelDownloadVideoBtn"),
+    downloadVideo: document.getElementById("downloadVideo")
+  },
+  texts: {
+    downloadLine: document.getElementById('downloadin-h1')
+  },
+  divs:{
+    detailsPage: document.getElementById("details"),
+    searchPage: document.getElementById("list")
+  },
+  tableContent:{
+    tableBody: document.getElementById("tc")
+  },
+  forms:{
+    searchInput: document.getElementById("searchInput"),
+  },
+  media: {
+    youtubeVideoPlayer: document.getElementById("vp")
+  }
+}
 
 const get = (keyword) => {
   let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&key=${API_KEY}&type=video&q=${keyword}`;
-  tbody.innerHTML = "";
+  DOM.tableContent.tableBody.innerHTML = "";
   fetch(url)
       .then(response => response.json())
       .then(json =>  showInfo(json))
@@ -34,16 +46,16 @@ const get = (keyword) => {
 };
 
 let showDetails = (info) => {
-  video.src = setUrl(info.id.videoId);
-  listPage.style.display = "none";
-  detailsPage.style.display = "block";
-  btnDownload.addEventListener("click", () => download(info));
+  DOM.media.youtubeVideoPlayer.src = setUrl(info.id.videoId);
+  DOM.divs.searchPage.style.display = "none";
+  DOM.divs.detailsPage.style.display = "block";
+  DOM.buttons.downloadOptions.addEventListener("click", () => download(info));
 };
 
 let backToList = () => {
-  detailsPage.style.display = "none";
-  listPage.style.display = "block";
-  // video.src = "";
+  DOM.divs.detailsPage.style.display = "none";
+  DOM.divs.searchPage.style.display = "block";
+  DOM.media.youtubeVideoPlayer.src = "";
 };
 
 let showInfo = (json) => {
@@ -88,7 +100,7 @@ let showInfo = (json) => {
     th.appendChild(canalData);
     th.appendChild(downlaodData);
 
-    tbody.appendChild(th);
+    DOM.tableContent.tableBody.appendChild(th);
   });
 };
 
@@ -96,11 +108,11 @@ let setUrl = (id) => {
   let searchhUrl = `https://www.youtube.com/embed/${id}?autoplay=0`;
   return searchhUrl;
 };
-backBtn.addEventListener("click", backToList);
+DOM.buttons.backFromDetails.addEventListener("click", backToList);
 
 let download = (info) => {
-  downloadModal.style.display = "flex";
-  downloadVideoBtn.addEventListener("click", () => downloadVideo(info));
+  DOM.modals.downloadOptionsModal.style.display = "flex";
+  DOM.buttons.downloadVideo.addEventListener("click", () => downloadVideo(info));
 };
 
 let downloadVideo = (info) => {
@@ -131,24 +143,24 @@ let downloadAudio = () => {
 };
 
 let closeDownloadModal = () => {
-  downloadModal.style.display = "none";
+  DOM.modals.downloadOptionsModal.style.display = "none";
 };
 
 let openLoadingModal = () => {
-  downloadLine.innerHTML = "Downloading";
-  gif.src = gifCatDownloading;
-  loadingModal.style.display = 'flex';
+  DOM.texts.downloadLine.innerHTML = "Downloading";
+  DOM.gifs.gifElement.src = DOM.gifs.gifDownloading;
+  DOM.modals.downloadingModal.style.display = 'flex';
 }
 let closeLoadingModal = () => {
-  downloadLine.innerHTML = "Done";
+  DOM.texts.downloadLine.innerHTML = "Done";
 
-  gif.src = gifCatDownloadDone;
-  setTimeout(() => loadingModal.style.display = 'none', 2000);
+  DOM.gifs.gifElement.src = DOM.gifs.gifDownloadDone;
+  setTimeout(() => DOM.modals.downloadingModal.style.display = 'none', 2000);
 
   
   
 }
 
-inputBtn.addEventListener("click", () => get(inputField.value));
+DOM.buttons.search.addEventListener("click", () => get(DOM.forms.searchInput.value));
 
-cancelDownloadVideoBtn.addEventListener("click", () => closeDownloadModal());
+DOM.buttons.backFromDownloadOptions.addEventListener("click", () => closeDownloadModal());
