@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DownloaderWebApi.Migrations
 {
     [DbContext(typeof(VideoContext))]
-    [Migration("20201231192437_init")]
+    [Migration("20210103023410_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,9 @@ namespace DownloaderWebApi.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("VideoId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("VideoPath")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

@@ -27,6 +27,9 @@ namespace DownloaderWebApi.Migrations
                     b.Property<string>("VideoId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("VideoPath")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("Videos");

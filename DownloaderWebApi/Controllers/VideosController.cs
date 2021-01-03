@@ -39,8 +39,9 @@ namespace DownloaderWebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Video>> PostVideo(Video video)
         {
-            bool result = await YoutubeDownloader.Download(video.VideoId);
-            if(result){
+            string result = await YoutubeDownloader.Download(video.VideoId);
+            if(result != null){
+                video.VideoPath = result;
                 _context.Add(video);
                 await _context.SaveChangesAsync();
                 return CreatedAtAction(nameof(GetVideos), new { id = video.Id }, video ); 

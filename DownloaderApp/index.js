@@ -16,34 +16,48 @@ const DOM = {
     backFromDetails: document.getElementById("btnVoltar"),
     search: document.getElementById("searchBtn"),
     backFromDownloadOptions: document.getElementById("cancelDownloadVideoBtn"),
-    downloadVideo: document.getElementById("downloadVideo")
+    downloadVideo: document.getElementById("downloadVideo"),
   },
   texts: {
     downloadLine: document.getElementById('downloadin-h1')
   },
   divs:{
     detailsPage: document.getElementById("details"),
-    searchPage: document.getElementById("list")
+    searchPage: document.getElementById("list"),
+    downlaodsPage: document.getElementById("downloadsPage")
   },
   tableContent:{
-    tableBody: document.getElementById("tc")
+    tableBody: document.getElementById("tc"),
+    downloadTableBody: document.getElementById('download-tablebody')
   },
   forms:{
     searchInput: document.getElementById("searchInput"),
   },
   media: {
     youtubeVideoPlayer: document.getElementById("vp")
+  },
+  navbar: {
+    downloadTabButton: document.getElementById("download-page-button"),
+    searchTabButton: document.getElementById("search-page-button"),
+    searchTabLI: document.getElementById('search-tab'),
+    downloadTabLI: document.getElementById('DownloadTabBtn')
   }
 }
 
 const get = (keyword) => {
   let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&key=${API_KEY}&type=video&q=${keyword}`;
   DOM.tableContent.tableBody.innerHTML = "";
-  fetch(url)
-      .then(response => response.json())
-      .then(json =>  showInfo(json))
-  // showInfo(json);
+  // fetch(url)
+  //     .then(response => response.json())
+  //     .then(json =>  showInfo(json))
+  showInfo(json);
 };
+
+let getDownloads = () => {
+  fetch("https://localhost:5001/api/videos")
+  .then(response => response.json())
+  .then( info => createDownloadsTable(info));
+}
 
 let showDetails = (info) => {
   DOM.media.youtubeVideoPlayer.src = setUrl(info.id.videoId);
@@ -156,11 +170,66 @@ let closeLoadingModal = () => {
 
   DOM.gifs.gifElement.src = DOM.gifs.gifDownloadDone;
   setTimeout(() => DOM.modals.downloadingModal.style.display = 'none', 2000);
-
-  
-  
 }
 
-DOM.buttons.search.addEventListener("click", () => get(DOM.forms.searchInput.value));
+let goToDownloadPage= () => {
+  
+  DOM.navbar.searchTabLI.classList.remove('active')
+  DOM.navbar.downloadTabLI.classList.add('active')
 
+  DOM.navbar.downloadTabButton.removeEventListener("click", goToDownloadPage);
+
+  DOM.divs.searchPage.style.display = 'none';
+  DOM.divs.downlaodsPage.style.display = 'block';
+
+  DOM.navbar.searchTabButton.addEventListener("click", goToSearchPage);
+
+}
+let goToSearchPage = () => {
+  DOM.navbar.downloadTabLI.classList.remove('active')
+  DOM.navbar.searchTabLI.classList.add('active')
+  DOM.navbar.searchTabButton.removeEventListener("click", goToSearchPage);
+  DOM.divs.downlaodsPage.style.display = 'none';
+  DOM.divs.searchPage.style.display = 'block';
+  DOM.navbar.downloadTabButton.addEventListener("click", goToDownloadPage);
+  
+}
+let createDownloadsTable = (info) => {
+  info.map((video , index) => {
+
+    let tableRow = document.createElement('tr'); 
+
+
+    let videoId = document.createTextNode(index + 1);
+    let videoIdTh= document.createElement('th');
+    videoIdTh.appendChild(videoId);
+
+    let videoTitle = document.createTextNode(video.title);
+    let videoTitleTd = document.createElement('td');
+    videoTitleTd.appendChild(videoTitle);
+    
+    let downloadButtonText = document.createTextNode("Download");
+    let downloadButton = document.createElement('button');
+    let downloadButtonRow = document.createElement('td');
+    downloadButton.appendChild(downloadButtonText);
+    downloadButtonRow.classList.add('btn');
+    downloadButtonRow.classList.add('btn-success');
+    downloadButtonRow.appendChild(downloadButton);
+
+    tableRow.appendChild(videoIdTh);
+    tableRow.appendChild(videoTitleTd);
+    tableRow.appendChild(downloadButtonRow);
+
+
+    DOM.tableContent.downloadTableBody.appendChild(tableRow);
+  })
+}
+
+DOM.navbar.downloadTabButton.addEventListener("click", goToDownloadPage);
+
+DOM.buttons.search.addEventListener("click", () => get(DOM.forms.searchInput.value));
 DOM.buttons.backFromDownloadOptions.addEventListener("click", () => closeDownloadModal());
+
+getDownloads();
+
+

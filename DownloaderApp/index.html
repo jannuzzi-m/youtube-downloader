@@ -26,12 +26,12 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li id="search-tab" class="nav-item active">
-            <a class="nav-link" href="#"
-              >Search <span class="sr-only">(current)</span></a
+            <a id="search-page-button" class="nav-link" style="cursor: pointer;"
+              >Search </a
             >
           </li>
           <li id="DownloadTabBtn" class="nav-item">
-            <a class="nav-link" href="#">Download</a>
+            <a id="download-page-button" class="nav-link" style="cursor: pointer;">Download</a>
           </li>
         </ul>
       </div>
@@ -68,11 +68,18 @@
         </table>
       </div>
 
-      <div id="details" class="container mt-4">
-        <div class="col-md-12">
-          <div class="row justify-content-md-center">
+
+
+
+      
+      <div id="details" class="container">
+        <div
+          class="row d-flex justify-content-center"
+        >
+          <div class="col-10 d-flex justify-content-center" >
             <iframe
-              class="row"
+
+              class=""
               id="vp"
               width="640"
               height="360"
@@ -80,16 +87,54 @@
               frameborder="0"
             ></iframe>
           </div>
-          <div class="row justify-content-md-center mt-4">
-            <button id="btnVoltar" class="btn btn-success col-md-3 mr-4">
-              Voltar
-            </button>
-            <button id="btnDownloadOptions" class="btn btn-success col-md-3 ml-4">
+        </div>
+
+        <div class="row d-flex justify-content-center mt-2">
+
+
+
+          <div class="col-sm-8 col-md-6">
+            <button
+              id="btnDownloadOptions"
+              class="btn btn-primary btn-lg btn-block"
+            >
               Download
             </button>
           </div>
+
+
+          <div class="col-sm-8 col-md-6">
+            <button
+              button
+              id="btnVoltar"
+              class="btn btn-secondary btn-lg btn-block"
+            >
+              Voltar
+            </button>
+          </div>
+
         </div>
       </div>
+
+
+      <div id="downloadsPage" class="container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">id</th>
+              <th scope="col">Tittle</th>
+              <th scope="col">Download</th>
+            </tr>
+          </thead>
+          <tbody id="download-tablebody">
+            
+            
+            
+          </tbody>
+        </table>
+      </div>
+
+      
     </div>
 
     <div id="download-modal">
@@ -98,28 +143,34 @@
           <button class="btn btn-success btn-download">Audio</button>
         </div>
         <div class="row">
-          <button id="downloadVideo" class="btn btn-success btn-download">Video</button>
+          <button id="downloadVideo" class="btn btn-success btn-download">
+            Video
+          </button>
         </div>
         <div class="row">
-          <button id="cancelDownloadVideoBtn" class="btn btn-warning btn-download">Cancelar</button>
+          <button
+            id="cancelDownloadVideoBtn"
+            class="btn btn-warning btn-download"
+          >
+            Cancelar
+          </button>
         </div>
       </div>
-
-
-
-
-      
     </div>
-    
-    
-    
+
     <div id="loading-modal">
       <div id="loading-content">
         <div class="row">
           <h1 id="downloadin-h1">Downloading</h1>
         </div>
         <div class="row">
-          <img id="gif" src="https://media.giphy.com/media/LHZyixOnHwDDy/giphy.gif" width="250px" height="250px" alt="">
+          <img
+            id="gif"
+            src="https://media.giphy.com/media/LHZyixOnHwDDy/giphy.gif"
+            width="250px"
+            height="250px"
+            alt=""
+          />
         </div>
       </div>
     </div>
