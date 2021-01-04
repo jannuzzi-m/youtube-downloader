@@ -47,14 +47,14 @@ const DOM = {
 const get = (keyword) => {
   let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&key=${API_KEY}&type=video&q=${keyword}`;
   DOM.tableContent.tableBody.innerHTML = "";
-  // fetch(url)
-  //     .then(response => response.json())
-  //     .then(json =>  showInfo(json))
-  showInfo(json);
+  fetch(url)
+      .then(response => response.json())
+      .then(json =>  showInfo(json))
+  // showInfo(json);
 };
 
 let getDownloads = () => {
-  fetch("https://localhost:5001/api/videos")
+  fetch("http://localhost:5001/api/videos")
   .then(response => response.json())
   .then( info => createDownloadsTable(info));
 }
@@ -122,7 +122,6 @@ let setUrl = (id) => {
   let searchhUrl = `https://www.youtube.com/embed/${id}?autoplay=0`;
   return searchhUrl;
 };
-DOM.buttons.backFromDetails.addEventListener("click", backToList);
 
 let download = (info) => {
   DOM.modals.downloadOptionsModal.style.display = "flex";
@@ -147,9 +146,10 @@ let downloadVideo = (info) => {
   })
     .then((response) => response.json())
     .then((json) => {
-      console.log(json);
       closeLoadingModal()
-    });
+      downloadFile(json)
+    })
+    
 };
 
 let downloadAudio = () => {
@@ -161,7 +161,7 @@ let closeDownloadModal = () => {
 };
 
 let openLoadingModal = () => {
-  DOM.texts.downloadLine.innerHTML = "Downloading";
+  DOM.texts.downloadLine.innerHTML = "Processing...";
   DOM.gifs.gifElement.src = DOM.gifs.gifDownloading;
   DOM.modals.downloadingModal.style.display = 'flex';
 }
@@ -225,10 +225,30 @@ let createDownloadsTable = (info) => {
   })
 }
 
-DOM.navbar.downloadTabButton.addEventListener("click", goToDownloadPage);
+let downloadFile = (json) => {
+  fetch(`https://localhost:5001/${json.videoPath}`)
+  .then( response => response.blob())
+  .then( blob => blobToFile(blob, json.videoPath.split('/')[1]))
+}
 
+let blobToFile = (blob, fileName) => {
+  let body = document.getElementsByTagName('body')[0]
+  let a = document.createElement('a');
+  a.style.display = 'none';
+  body.appendChild(a);
+
+  let url = window.URL.createObjectURL(blob);
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  window.URL.revokeObjectURL(blob);
+  body.removeChild(a);
+}
+
+DOM.navbar.downloadTabButton.addEventListener("click", goToDownloadPage);
 DOM.buttons.search.addEventListener("click", () => get(DOM.forms.searchInput.value));
 DOM.buttons.backFromDownloadOptions.addEventListener("click", () => closeDownloadModal());
+DOM.buttons.backFromDetails.addEventListener("click", backToList);
 
 getDownloads();
 

@@ -6,5 +6,6 @@ namespace DownloaderWebApi.Models
         public string VideoId { get; set; }
         public string Title { get; set; }
         public string VideoPath { get; set; }
+        public string AudioPath { get; set; }
     }
 }

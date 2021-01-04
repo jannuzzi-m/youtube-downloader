@@ -14,7 +14,8 @@ namespace DownloaderWebApi.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     VideoId = table.Column<string>(type: "TEXT", nullable: true),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
-                    VideoPath = table.Column<string>(type: "TEXT", nullable: true)
+                    VideoPath = table.Column<string>(type: "TEXT", nullable: true),
+                    AudioPath = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {

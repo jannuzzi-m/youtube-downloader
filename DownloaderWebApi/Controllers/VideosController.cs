@@ -41,9 +41,11 @@ namespace DownloaderWebApi.Controllers
         {
             string result = await YoutubeDownloader.Download(video.VideoId);
             if(result != null){
+
                 video.VideoPath = result;
                 _context.Add(video);
                 await _context.SaveChangesAsync();
+           
                 return CreatedAtAction(nameof(GetVideos), new { id = video.Id }, video ); 
             }else{
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro ao realizar o Download");
