@@ -58,3 +58,7 @@
 #downloadsPage{
     display: none;
 }
+
+#searchByUrl{
+    display: none;
+}

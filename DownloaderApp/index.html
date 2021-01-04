@@ -10,32 +10,32 @@
     <link href="./style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">YoutubeDownloader</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li id="search-tab" class="nav-item active">
-            <a id="search-page-button" class="nav-link" style="cursor: pointer;"
-              >Search </a
-            >
-          </li>
-          <li id="DownloadTabBtn" class="nav-item">
-            <a id="download-page-button" class="nav-link" style="cursor: pointer;">Download</a>
-          </li>
-        </ul>
+    <!-- NavBar -->
+    <nav class="navbar navbar-light bg-light">
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Youtube Downloader</span>
       </div>
     </nav>
+    <!--  -->
+
+    <div id="toggleDownloads" class="container">
+      <ul class="nav nav-pills nav-fill">
+        <li class="nav-item">
+          <a
+            id="search-page-button"
+            class="nav-link active"
+            aria-current="page"
+            style="cursor: pointer"
+            >Search</a
+          >
+        </li>
+        <li class="nav-item">
+          <a id="search-by-url-tab-button" class="nav-link" style="cursor: pointer"
+            >Download by Url</a
+          >
+        </li>
+      </ul>
+    </div>
 
     <div id="content">
       <div id="list" class="container">
@@ -68,17 +68,10 @@
         </table>
       </div>
 
-
-
-
-      
       <div id="details" class="container">
-        <div
-          class="row d-flex justify-content-center"
-        >
-          <div class="col-10 d-flex justify-content-center" >
+        <div class="row d-flex justify-content-center">
+          <div class="col-10 d-flex justify-content-center">
             <iframe
-
               class=""
               id="vp"
               width="640"
@@ -90,9 +83,6 @@
         </div>
 
         <div class="row d-flex justify-content-center mt-2">
-
-
-
           <div class="col-sm-8 col-md-6">
             <button
               id="btnDownloadOptions"
@@ -101,7 +91,6 @@
               Download
             </button>
           </div>
-
 
           <div class="col-sm-8 col-md-6">
             <button
@@ -112,30 +101,59 @@
               Voltar
             </button>
           </div>
-
         </div>
       </div>
 
 
-      <div id="downloadsPage" class="container">
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">id</th>
-              <th scope="col">Tittle</th>
-              <th scope="col">Download</th>
-            </tr>
-          </thead>
-          <tbody id="download-tablebody">
-            
-            
-            
-          </tbody>
-        </table>
-      </div>
 
-      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div id="searchByUrl" class="container">
+        <div class="row justify-content-center input-group mt-2 mb-2">
+          <div class="col-sm-8">
+            <input
+              id="searchByUrlInput"
+              class="form-control"
+              type="text"
+              placeholder="Pesquisa"
+              aria-label="Disabled input example"
+            />
+          </div>
+          <div class="col-sm-2">
+            <button id="search-by-url-button" class="btn btn-primary">Download</button>
+          </div>
+        </div>
+      </div>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <div id="download-modal">
       <div id="download-content">
