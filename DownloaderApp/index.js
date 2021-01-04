@@ -1,6 +1,19 @@
 const { API_KEY } = require("./api");
 const { json } = require("./fakeData");
 
+
+let api_key;
+
+const submmitApiKey = document.getElementById('submmit-api-key');
+const apiKeyInput = document.getElementById('apiKeyInput');
+const apiKeyModal = document.getElementById('api_key-modal');
+submmitApiKey.addEventListener('click', ()=>{
+  api_key = apiKeyInput.value;
+  apiKeyModal.style.display = 'none';
+
+})
+
+
 const DOM = {
   gifs: {
     gifElement: document.getElementById("gif"),
@@ -47,12 +60,12 @@ const DOM = {
 };
 
 const get = (keyword) => {
-  // let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&key=${API_KEY}&type=video&q=${keyword}`;
-  // DOM.tableContent.tableBody.innerHTML = "";
-  // fetch(url)
-  //     .then(response => response.json())
-  //     .then(json =>  showInfo(json))
-  showInfo(json);
+  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&key=${api_key}&type=video&q=${keyword}`;
+  DOM.tableContent.tableBody.innerHTML = "";
+  fetch(url)
+      .then(response => response.json())
+      .then(json =>  showInfo(json))
+  // showInfo(json);
 };
 
 let getDownloads = () => {
