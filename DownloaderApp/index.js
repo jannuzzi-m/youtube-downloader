@@ -1,73 +1,65 @@
-const fs = require('fs');
+const fs = require("fs");
 
 let apiKey;
 let ipAdress;
 
-
 let settingUp = () => {
-  fs.readFile('./config.json', 'utf8', (err, response) => {
-    if(err){
+  // set apikey and adress
+  fs.readFile("./config.json", "utf8", (err, jsonStringfy) => {
+    if (err) {
       console.log(err);
-      return
+      return;
     }
-    let parsedJson = JSON.parse(response);
-    if(parsedJson.APIKey == "" || parsedJson.IpAdress =="")
-    {
-      apiKeyModal.style.display = "flex";
-    }
+    const parsedJson = JSON.parse(jsonStringfy);
     apiKey = parsedJson.APIKey;
     ipAdress = parsedJson.IpAdress;
-    
-    
-  })
-  
-}
+    if(ipAdress == "" || apiKey == "")
+      apiKeyModal.style.display = 'flex';
+    apiKeyInput.value = apiKey;
+    apiAdress.value = ipAdress;
+  });
+};
 
 settingUp();
 
-const submmitApiKey = document.getElementById('submmit-api-key');
-const apiKeyInput = document.getElementById('apiKeyInput');
-const apiKeyModal = document.getElementById('api_key-modal');
-const apiAdress = document.getElementById('ip-adress');
+const submmitApiKey = document.getElementById("submmit-api-key");
+const apiKeyInput = document.getElementById("apiKeyInput");
+const apiKeyModal = document.getElementById("api_key-modal");
+const apiAdress = document.getElementById("ip-adress");
 
-const openSettingsModal = document.getElementById('open-settings');
+const openSettingsModal = document.getElementById("open-settings");
 
-submmitApiKey.addEventListener('click', ()=>{
-  setConfig(apiKeyInput.value, apiAdress.value)
-  apiKeyModal.style.display = 'none';
+submmitApiKey.addEventListener("click", () => {
+  setConfig(apiKeyInput.value, apiAdress.value);
+  apiKeyModal.style.display = "none";
+});
 
-})
-
-let setConfig = (apikey, ipAdress) =>{
-  if(apiKey != "")
-  {
-    return
-  }
+let setConfig = (apiKeyValue, ipAdressValue) => {
   let newConfig = {
-    IpAdress: ipAdress,
-    APIKey: apikey
-  } 
+    IpAdress: ipAdressValue,
+    APIKey: apiKeyValue,
+  };
 
   let newConfigStringfy = JSON.stringify(newConfig);
-  fs.writeFile('./config.json', newConfigStringfy, err => console.log(err))
+  fs.writeFile("./config.json", newConfigStringfy, (err) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
 
+    apiKey = newConfig.APIKey;
+    ipAdress = newConfig.IpAdress;
+  });
+};
 
-  apiKey = apiKeyInput.value;
-  ipAdress = apiAdress.value;
-}
-
-openSettingsModal.addEventListener('click', () => openSettings());
+openSettingsModal.addEventListener("click", () => openSettings());
 
 let openSettings = () => {
-
   apiKeyInput.value = apiKey;
   apiAdress.value = ipAdress;
 
-
-
-
-  apiKeyModal.style.display = 'flex';
-}
+  apiKeyModal.style.display = "flex";
+};
 
 const DOM = {
   gifs: {
@@ -110,26 +102,25 @@ const DOM = {
   tabsElements: {
     searchPageButton: document.getElementById("search-page-button"),
     searchByUrlButton: document.getElementById("search-by-url-tab-button"),
-    tabsToggle: document.getElementById('toggleDownloads')
+    tabsToggle: document.getElementById("toggleDownloads"),
   },
 };
 
 const get = (keyword) => {
   let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&key=${apiKey}&type=video&q=${keyword}`;
   DOM.tableContent.tableBody.innerHTML = "";
-  try{
-
+  try {
     fetch(url)
-        .then(response => response.json())
-        .then(json =>  showInfo(json))
+      .then((response) => response.json())
+      .then((json) => showInfo(json));
     // showInfo(json);
-  }catch(err){
+  } catch (err) {
     console.log(err);
   }
 };
 
 let showDetails = (info) => {
-  DOM.tabsElements.tabsToggle.style.display = 'none';
+  DOM.tabsElements.tabsToggle.style.display = "none";
   DOM.media.youtubeVideoPlayer.src = setUrl(info.id.videoId);
   DOM.divs.searchPage.style.display = "none";
   DOM.divs.detailsPage.style.display = "block";
@@ -137,7 +128,7 @@ let showDetails = (info) => {
 };
 
 let backToList = () => {
-  DOM.tabsElements.tabsToggle.style.display = 'block';
+  DOM.tabsElements.tabsToggle.style.display = "block";
   DOM.divs.detailsPage.style.display = "none";
   DOM.divs.searchPage.style.display = "block";
   DOM.media.youtubeVideoPlayer.src = "";
@@ -145,8 +136,7 @@ let backToList = () => {
 
 let showInfo = (json) => {
   let items = json.items;
-  if(items == undefined)
-    return
+  if (items == undefined) return;
   items.map((item, index) => {
     let th = document.createElement("tr");
 
@@ -213,15 +203,13 @@ let downloadVideo = (info, byUrl = false) => {
       VideoId: info.split("v=")[1],
       Title: "ByUrl",
     };
-    console.log(data);
   } else {
     data = {
       VideoId: info.id.videoId,
       Title: info.snippet.title,
     };
   }
-  try{
-    
+  try {
     fetch(`https://${ipAdress}:5001/api/Videos`, {
       method: "POST",
       headers: {
@@ -232,15 +220,13 @@ let downloadVideo = (info, byUrl = false) => {
     })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
         closeLoadingModal();
         downloadFile(json);
       });
-  }catch(err){
+  } catch (err) {
     console.log(err);
   }
 };
-
 
 let closeDownloadModal = () => {
   DOM.modals.downloadOptionsModal.style.display = "none";
@@ -258,15 +244,12 @@ let closeLoadingModal = () => {
   setTimeout(() => (DOM.modals.downloadingModal.style.display = "none"), 2000);
 };
 
-
-
 let downloadFile = (json) => {
   fetch(`https://${ipAdress}:5001/${json.videoPath}`)
     .then((response) => response.blob())
-    .then(blob => {
-      blobToFile(blob, json.videoPath.split("/")[1], json.id)
-    }
-    );
+    .then((blob) => {
+      blobToFile(blob, json.videoPath.split("/")[1], json.id);
+    });
 };
 
 let blobToFile = (blob, fileName, id) => {
@@ -302,9 +285,6 @@ let toggleToSearch = () => {
   DOM.divs.searchPage.style.display = "block";
 };
 
-
-
-
 DOM.buttons.search.addEventListener("click", () =>
   get(DOM.forms.searchInput.value)
 );
@@ -321,5 +301,3 @@ DOM.tabsElements.searchPageButton.addEventListener("click", () =>
 DOM.forms.searchBuUrlButton.addEventListener("click", () =>
   downloadVideo(DOM.forms.searchByUrlInput.value, true)
 );
-
-
