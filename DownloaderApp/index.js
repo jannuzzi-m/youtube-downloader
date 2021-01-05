@@ -1,18 +1,73 @@
-const { API_KEY } = require("./api");
-const { json } = require("./fakeData");
+const fs = require('fs');
+
+let apiKey;
+let ipAdress;
 
 
-let api_key;
+let settingUp = () => {
+  fs.readFile('./config.json', 'utf8', (err, response) => {
+    if(err){
+      console.log(err);
+      return
+    }
+    let parsedJson = JSON.parse(response);
+    if(parsedJson.APIKey == "" || parsedJson.IpAdress =="")
+    {
+      apiKeyModal.style.display = "flex";
+    }
+    apiKey = parsedJson.APIKey;
+    ipAdress = parsedJson.IpAdress;
+    
+    
+  })
+  
+}
+
+settingUp();
 
 const submmitApiKey = document.getElementById('submmit-api-key');
 const apiKeyInput = document.getElementById('apiKeyInput');
 const apiKeyModal = document.getElementById('api_key-modal');
+const apiAdress = document.getElementById('ip-adress');
+
+const openSettingsModal = document.getElementById('open-settings');
+
 submmitApiKey.addEventListener('click', ()=>{
-  api_key = apiKeyInput.value;
+  setConfig(apiKeyInput.value, apiAdress.value)
   apiKeyModal.style.display = 'none';
 
 })
 
+let setConfig = (apikey, ipAdress) =>{
+  if(apiKey != "")
+  {
+    return
+  }
+  let newConfig = {
+    IpAdress: ipAdress,
+    APIKey: apikey
+  } 
+
+  let newConfigStringfy = JSON.stringify(newConfig);
+  fs.writeFile('./config.json', newConfigStringfy, err => console.log(err))
+
+
+  apiKey = apiKeyInput.value;
+  ipAdress = apiAdress.value;
+}
+
+openSettingsModal.addEventListener('click', () => openSettings());
+
+let openSettings = () => {
+
+  apiKeyInput.value = apiKey;
+  apiAdress.value = ipAdress;
+
+
+
+
+  apiKeyModal.style.display = 'flex';
+}
 
 const DOM = {
   gifs: {
@@ -60,18 +115,17 @@ const DOM = {
 };
 
 const get = (keyword) => {
-  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&key=${api_key}&type=video&q=${keyword}`;
+  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&key=${apiKey}&type=video&q=${keyword}`;
   DOM.tableContent.tableBody.innerHTML = "";
-  fetch(url)
-      .then(response => response.json())
-      .then(json =>  showInfo(json))
-  // showInfo(json);
-};
+  try{
 
-let getDownloads = () => {
-  fetch("http://localhost:5001/api/videos")
-    .then((response) => response.json())
-    .then((info) => createDownloadsTable(info));
+    fetch(url)
+        .then(response => response.json())
+        .then(json =>  showInfo(json))
+    // showInfo(json);
+  }catch(err){
+    console.log(err);
+  }
 };
 
 let showDetails = (info) => {
@@ -91,6 +145,8 @@ let backToList = () => {
 
 let showInfo = (json) => {
   let items = json.items;
+  if(items == undefined)
+    return
   items.map((item, index) => {
     let th = document.createElement("tr");
 
@@ -149,7 +205,6 @@ let download = (info) => {
 
 let downloadVideo = (info, byUrl = false) => {
   let data;
-  console.log(info);
   closeDownloadModal();
   openLoadingModal();
 
@@ -165,26 +220,27 @@ let downloadVideo = (info, byUrl = false) => {
       Title: info.snippet.title,
     };
   }
-
-  fetch("https://localhost:5001/api/Videos", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .then((json) => {
-      closeLoadingModal();
-      downloadFile(json);
-    });
+  try{
+    
+    fetch(`https://${ipAdress}:5001/api/Videos`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        closeLoadingModal();
+        downloadFile(json);
+      });
+  }catch(err){
+    console.log(err);
+  }
 };
 
-// https://www.youtube.com/watch?v=dhzixD5EFUc
-let downloadAudio = () => {
-  return null;
-};
 
 let closeDownloadModal = () => {
   DOM.modals.downloadOptionsModal.style.display = "none";
@@ -202,41 +258,18 @@ let closeLoadingModal = () => {
   setTimeout(() => (DOM.modals.downloadingModal.style.display = "none"), 2000);
 };
 
-let createDownloadsTable = (info) => {
-  info.map((video, index) => {
-    let tableRow = document.createElement("tr");
 
-    let videoId = document.createTextNode(index + 1);
-    let videoIdTh = document.createElement("th");
-    videoIdTh.appendChild(videoId);
-
-    let videoTitle = document.createTextNode(video.title);
-    let videoTitleTd = document.createElement("td");
-    videoTitleTd.appendChild(videoTitle);
-
-    let downloadButtonText = document.createTextNode("Download");
-    let downloadButton = document.createElement("button");
-    let downloadButtonRow = document.createElement("td");
-    downloadButton.appendChild(downloadButtonText);
-    downloadButtonRow.classList.add("btn");
-    downloadButtonRow.classList.add("btn-success");
-    downloadButtonRow.appendChild(downloadButton);
-
-    tableRow.appendChild(videoIdTh);
-    tableRow.appendChild(videoTitleTd);
-    tableRow.appendChild(downloadButtonRow);
-
-    DOM.tableContent.downloadTableBody.appendChild(tableRow);
-  });
-};
 
 let downloadFile = (json) => {
-  fetch(`https://localhost:5001/${json.videoPath}`)
+  fetch(`https://${ipAdress}:5001/${json.videoPath}`)
     .then((response) => response.blob())
-    .then((blob) => blobToFile(blob, json.videoPath.split("/")[1]));
+    .then(blob => {
+      blobToFile(blob, json.videoPath.split("/")[1], json.id)
+    }
+    );
 };
 
-let blobToFile = (blob, fileName) => {
+let blobToFile = (blob, fileName, id) => {
   let body = document.getElementsByTagName("body")[0];
   let a = document.createElement("a");
   a.style.display = "none";
@@ -248,6 +281,11 @@ let blobToFile = (blob, fileName) => {
   a.click();
   window.URL.revokeObjectURL(blob);
   body.removeChild(a);
+
+  // fetch(`https://${ipAdress}:5001/videos/${id}`, {
+  //   method: "DELETE"
+  // })
+  // .then(response => console.log(response))
 };
 
 let toggleToSearchByUrl = () => {
@@ -263,6 +301,9 @@ let toggleToSearch = () => {
   DOM.divs.searchByUrl.style.display = "none";
   DOM.divs.searchPage.style.display = "block";
 };
+
+
+
 
 DOM.buttons.search.addEventListener("click", () =>
   get(DOM.forms.searchInput.value)
@@ -280,4 +321,5 @@ DOM.tabsElements.searchPageButton.addEventListener("click", () =>
 DOM.forms.searchBuUrlButton.addEventListener("click", () =>
   downloadVideo(DOM.forms.searchByUrlInput.value, true)
 );
-getDownloads();
+
+
