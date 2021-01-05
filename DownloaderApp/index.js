@@ -152,7 +152,7 @@ let showInfo = (json) => {
 
     btn.addEventListener("click", () => showDetails(item));
 
-    let btnDownload = document.createTextNode("Detalhes");
+    let btnDownload = document.createTextNode("Details");
     btn.appendChild(btnDownload);
 
     let idData = document.createElement("th");
