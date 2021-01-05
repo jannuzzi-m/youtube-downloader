@@ -5,3 +5,5 @@ api.js
 *.mp4
 fakeData.js
 out
+obj
+Debug
